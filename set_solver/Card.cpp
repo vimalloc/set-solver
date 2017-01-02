@@ -15,22 +15,18 @@ Card::Card(cv::Mat img) {
 }
 
 
-Card::Card(cv::Mat img, std::vector<cv::Point> contour) {
-    cv::Rect roi = cv::boundingRect(contour);
-    original_image = img(roi);
+Card::Card(const cv::Mat img, const std::vector<std::vector<cv::Point>> &contours,
+           int contour_index) {
+    // Create a mask where everything beside our contour is black
+    cv::Mat mask(img.size(), CV_8UC1, cv::Scalar(0));
+    cv::drawContours(mask, contours, contour_index, cv::Scalar(255,255,255,0), CV_FILLED);
+    cv::Mat masked_image;
+    img.copyTo(masked_image, mask);
 
-
-
-
-    /*
-    val mask = new Mat(colorImg.size(), CV_8UC1, new Scalar(0))
-    drawContours(mask, contours, i.toInt, new Scalar(255,255,255,0), CV_FILLED,
-                 8, noArray(), Int.MaxValue, new Point())
-
-    val imgRoi = new Mat()
-    colorImg.copyTo(imgRoi, mask)
-    val contourRegion = imgRoi(roi)
-     */
+    // Used the masked image to create our region of intreset, where everything outside
+    // of the contour is black
+    cv::Rect roi = cv::boundingRect(contours[contour_index]);
+    original_image = masked_image(roi);
 }
 
 void Card::displayCard(void) const {

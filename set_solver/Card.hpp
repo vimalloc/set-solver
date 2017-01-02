@@ -6,12 +6,14 @@
 class Card {
 
 public:
-    Card(cv::Mat img);
-    Card(cv::Mat img, std::vector<cv::Point> contour);
+    Card(const cv::Mat img);
+    Card(const cv::Mat img, const std::vector<std::vector<cv::Point>> &contour, int vector_index);
+
     void displayCard(void) const;
 
 private:
     cv::Mat original_image;
+    cv::Mat processed_image;
 };
 
 
