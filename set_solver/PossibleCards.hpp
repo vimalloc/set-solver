@@ -5,22 +5,23 @@
 #define SET_POSSIBLECARDS_HPP
 #include <opencv2/opencv.hpp>
 
-using namespace cv;
-
-
 class PossibleCards {
 
 public:
-    PossibleCards(String filename);
+    PossibleCards(std::string filename);
     void displayOriginalImage(void);
     void displayProcessedImage(void);
+    void findPossibleCards(int = 100, int = 900);
 
 private:
     // Original color image (resized down)
-    Mat original_image;
+    cv::Mat original_image;
 
     // Original image with a blur and grayscale applied
-    Mat processed_image;
+    cv::Mat processed_image;
+
+    // Contours that might make up a set card
+    std::vector<std::vector<cv::Point>> possible_cards;
 
 };
 

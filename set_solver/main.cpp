@@ -31,8 +31,8 @@ int main(int argc, char** argv ) {
 
     try {
         PossibleCards cards(argv[1]);
-        cards.displayOriginalImage();
-        cards.displayProcessedImage();
+        //cards.displayOriginalImage();
+        //cards.displayProcessedImage();
     } catch (std::runtime_error &e) {
         cout << e.what() << "\n";
         return -1;
