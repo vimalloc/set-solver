@@ -10,10 +10,10 @@ class PossibleCards {
 
 public:
     PossibleCards(std::string filename);
-    void displayOriginalImage(void);
-    void displayProcessedImage(void);
-    void displayPossibleCards(void);
-    std::vector<Card> getCards(void);
+    void displayOriginalImage(void) const;
+    void displayProcessedImage(void) const;
+    void displayPossibleCards(void) const;
+    std::vector<Card> getCards(void) const;
 
 private:
     // Original color image (resized down)

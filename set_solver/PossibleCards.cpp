@@ -175,19 +175,19 @@ void PossibleCards::findPossibleCards(int low_threshold, int min_area) {
     filter_contours_not_rectangles(possible_cards);
 }
 
-void PossibleCards::displayOriginalImage(void) {
+void PossibleCards::displayOriginalImage(void) const {
     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
     cv::imshow("Display", original_image);
     cv::waitKey(0);
 }
 
-void PossibleCards::displayProcessedImage(void) {
+void PossibleCards::displayProcessedImage(void) const {
     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
     cv::imshow("Display", processed_image);
     cv::waitKey(0);
 }
 
-void PossibleCards::displayPossibleCards(void) {
+void PossibleCards::displayPossibleCards(void) const {
     cv::Mat image_with_contours_outlined;
     original_image.copyTo(image_with_contours_outlined);
     cv::Scalar pink(255, 0, 255);
@@ -197,7 +197,10 @@ void PossibleCards::displayPossibleCards(void) {
     cv::waitKey(0);
 }
 
-std::vector<Card> PossibleCards::getCards(void) {
+std::vector<Card> PossibleCards::getCards(void) const {
     auto cards = std::vector<Card>();
+    for (auto const &contour : possible_cards) {
+        cards.push_back(Card(original_image, contour));
+    }
+    return cards;
 }
-

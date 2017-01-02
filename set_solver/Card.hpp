@@ -8,7 +8,7 @@ class Card {
 public:
     Card(cv::Mat img);
     Card(cv::Mat img, std::vector<cv::Point> contour);
-    void displayCard(void);
+    void displayCard(void) const;
 
 private:
     cv::Mat original_image;

@@ -33,7 +33,7 @@ Card::Card(cv::Mat img, std::vector<cv::Point> contour) {
      */
 }
 
-void Card::displayCard(void) {
+void Card::displayCard(void) const {
     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
     cv::imshow("Display", original_image);
     cv::waitKey(0);

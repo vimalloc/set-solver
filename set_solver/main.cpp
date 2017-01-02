@@ -10,10 +10,14 @@ int main(int argc, char** argv ) {
     }
 
     try {
-        PossibleCards cards(argv[1]);
-        cards.displayOriginalImage();
-        cards.displayProcessedImage();
-        cards.displayPossibleCards();
+        PossibleCards possible_cards(argv[1]);
+        possible_cards.displayOriginalImage();
+        possible_cards.displayProcessedImage();
+        possible_cards.displayPossibleCards();
+        std::vector<Card> cards = possible_cards.getCards();
+        for (auto const &card : cards) {
+            card.displayCard();
+        }
     } catch (std::runtime_error &e) {
         std::cout << e.what() << "\n";
         return -1;
