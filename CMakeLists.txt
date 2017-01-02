@@ -9,7 +9,8 @@
 #add_executable(Set ${SOURCE_FILES})
 
 cmake_minimum_required(VERSION 3.6)
-project( Set )
+set(CMAKE_CXX_STANDARD 11)
+project( SetSolver )
 find_package( OpenCV REQUIRED )
-add_executable( SetSolver SetSolver.cpp )
+add_executable( SetSolver set_solver/main.cpp set_solver/PossibleCards.cpp set_solver/PossibleCards.hpp)
 target_link_libraries( SetSolver ${OpenCV_LIBS} )
