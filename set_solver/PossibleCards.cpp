@@ -199,8 +199,8 @@ void PossibleCards::displayPossibleCards(void) const {
 
 std::vector<Card> PossibleCards::getCards(void) const {
     auto cards = std::vector<Card>();
-    for (auto i=0; i<possible_cards.size(); i++) {
-        cards.push_back(Card(original_image, possible_cards, i));
+    for (auto const &contour : possible_cards) {
+        cards.push_back(Card(original_image, contour));
     }
     return cards;
 }
