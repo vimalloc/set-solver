@@ -143,7 +143,7 @@ void PossibleCards::findPossibleCards(int low_threshold, int min_area) {
     // Do some filtering based on the area of the cards, to attempt to pre-emptively
     // filter out any contour that isn't a good canidate for a card
     filter_contours_min_area(possible_cards, min_area);
-    filter_contours_similiar_area(possible_cards, 1.2);
+    filter_contours_similiar_area(possible_cards, 1.4);
 }
 
 void PossibleCards::displayOriginalImage(void) {
