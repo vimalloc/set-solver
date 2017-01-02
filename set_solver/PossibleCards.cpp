@@ -62,16 +62,16 @@ namespace {
             throw std::out_of_range("area_tolerance must be >= 1.0");
         }
 
-        double max_area_for_chain = 0;
-        int best_chain_length = 0;
-        int best_chain_start_index = 0;
-        int current_chain_length = 0;
-        int current_chain_start_index = 0;
+        double max_area_for_chain = 0.0;
+        auto best_chain_length = 0;
+        auto best_chain_start_index = 0;
+        auto current_chain_length = 0;
+        auto current_chain_start_index = 0;
 
         // Find the start index and length of the longest chain of similar areas
         sort_contours_by_area(contours);
         for(int i=0; i<contours.size(); i++) {
-            double area = cv::contourArea(contours[i]);
+            auto area = cv::contourArea(contours[i]);
 
             // Marks the end of a chain
             if (area > max_area_for_chain) {
@@ -115,9 +115,9 @@ namespace {
                                    // We don't want to change the contour for this image, it
                                    // could make bounding rectangles harder to use
                                    std::vector<cv::Point> poly_result;
-                                   double peri = arcLength(c, true);
+                                   auto peri = arcLength(c, true);
                                    approxPolyDP(c, poly_result, 0.04 * peri, true);
-                                   unsigned long num_vertices = poly_result.size();
+                                   auto num_vertices = poly_result.size();
                                    return num_vertices != 4;
                                }),
                 contours.end()
@@ -143,13 +143,13 @@ PossibleCards::PossibleCards(std::string filename) {
     double height = double(original_image.rows);
     int new_width = resized_width;
     int new_height = (int) ((height / width) * resized_width);
-    resize(original_image, original_image, cv::Size(new_width, new_height));
+    cv::resize(original_image, original_image, cv::Size(new_width, new_height));
 
     // Save a grayscaled/blurred image into processed_image. This
     // reduces the noise of the image, so we can do more accurate
     // line detection
-    cvtColor(original_image, processed_image, cv::COLOR_BGR2GRAY);
-    GaussianBlur(processed_image, processed_image, cv::Size(3, 3), 0);
+    cv::cvtColor(original_image, processed_image, cv::COLOR_BGR2GRAY);
+    cv::GaussianBlur(processed_image, processed_image, cv::Size(3, 3), 0);
     findPossibleCards();
 }
 
@@ -165,8 +165,8 @@ void PossibleCards::findPossibleCards(int low_threshold, int min_area) {
     // Due to all the possible lighting/background situations that the picture could
     // be in, I've found that Canny line detection works much more consistently than
     // thresholding
-    Canny(processed_image, canny_lines_img, low_threshold, low_threshold * 3);
-    findContours(canny_lines_img, possible_cards, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    cv::Canny(processed_image, canny_lines_img, low_threshold, low_threshold * 3);
+    cv::findContours(canny_lines_img, possible_cards, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
     // Do some filtering based on the area of the cards, to attempt to preemptively
     // filter out any contour that isn't a good candidate for a card
@@ -177,13 +177,13 @@ void PossibleCards::findPossibleCards(int low_threshold, int min_area) {
 
 void PossibleCards::displayOriginalImage(void) {
     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
-    imshow("Display", original_image);
+    cv::imshow("Display", original_image);
     cv::waitKey(0);
 }
 
 void PossibleCards::displayProcessedImage(void) {
     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
-    imshow("Display", processed_image);
+    cv::imshow("Display", processed_image);
     cv::waitKey(0);
 }
 
@@ -191,8 +191,13 @@ void PossibleCards::displayPossibleCards(void) {
     cv::Mat image_with_contours_outlined;
     original_image.copyTo(image_with_contours_outlined);
     cv::Scalar pink(255, 0, 255);
-    int border_size = 2;
-    drawContours(image_with_contours_outlined, possible_cards, -1, pink, border_size);
+    auto border_size = 2;
+    cv::drawContours(image_with_contours_outlined, possible_cards, -1, pink, border_size);
     cv::imshow("Display", image_with_contours_outlined);
     cv::waitKey(0);
 }
+
+std::vector<Card> PossibleCards::getCards(void) {
+    auto cards = std::vector<Card>();
+}
+

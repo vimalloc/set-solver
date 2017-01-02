@@ -4,6 +4,7 @@
 #ifndef SET_POSSIBLECARDS_HPP
 #define SET_POSSIBLECARDS_HPP
 #include <opencv2/opencv.hpp>
+#include "Card.hpp"
 
 class PossibleCards {
 
@@ -12,6 +13,7 @@ public:
     void displayOriginalImage(void);
     void displayProcessedImage(void);
     void displayPossibleCards(void);
+    std::vector<Card> getCards(void);
 
 private:
     // Original color image (resized down)
