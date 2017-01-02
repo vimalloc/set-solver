@@ -1,5 +1,6 @@
 #include "PossibleCards.hpp"
 
+
 // Free (non-member) helper functions use by this class. Wrap them in a namespace
 // here so they don't pollute any other namespaces
 namespace {
@@ -101,6 +102,10 @@ namespace {
     }
 }
 
+// Consts to avoid magic numbers in this code
+const int resized_width = 1000;
+const double similar_area_tolerance = 1.4;
+
 PossibleCards::PossibleCards(std::string filename) {
     original_image = cv::imread(filename, cv::IMREAD_COLOR);
     if (original_image.empty()) {
@@ -113,8 +118,8 @@ PossibleCards::PossibleCards(std::string filename) {
     // a card
     double width = double(original_image.cols);
     double height = double(original_image.rows);
-    int new_width = 1000;
-    int new_height = (int) ((height / width) * new_width);
+    int new_width = resized_width;
+    int new_height = (int) ((height / width) * resized_width);
     resize(original_image, original_image, cv::Size(new_width, new_height));
 
     // Save a grayscaled/blurred image into processed_image. This
@@ -143,7 +148,7 @@ void PossibleCards::findPossibleCards(int low_threshold, int min_area) {
     // Do some filtering based on the area of the cards, to attempt to pre-emptively
     // filter out any contour that isn't a good canidate for a card
     filter_contours_min_area(possible_cards, min_area);
-    filter_contours_similiar_area(possible_cards, 1.4);
+    filter_contours_similiar_area(possible_cards, similar_area_tolerance);
 }
 
 void PossibleCards::displayOriginalImage(void) {
@@ -162,7 +167,8 @@ void PossibleCards::displayPossibleCards(void) {
     cv::Mat image_with_contours_outlined;
     original_image.copyTo(image_with_contours_outlined);
     cv::Scalar pink(255, 0, 255);
-    drawContours(image_with_contours_outlined, possible_cards, -1, pink, 2);
+    int border_size = 2;
+    drawContours(image_with_contours_outlined, possible_cards, -1, pink, border_size);
     cv::imshow("Display", image_with_contours_outlined);
     cv::waitKey(0);
 }
