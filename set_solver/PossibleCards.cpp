@@ -54,7 +54,8 @@ namespace {
      *                  still be considered a similiar area. 1.0 indicates they must be an
      *                  exact match. This should be 1.0 or greater.
      */
-    void filter_contours_similiar_area(std::vector<std::vector<cv::Point>> &contours, double area_tolerance) {
+    void filter_contours_similiar_area(std::vector<std::vector<cv::Point>> &contours,
+                                       double area_tolerance) {
         // If area_tolerance was less then 1, this function would always return only the
         // contour with the greatest area.
         if (area_tolerance < 1.0) {
@@ -99,6 +100,28 @@ namespace {
         // change the indexes for the end ones.
         contours.erase(contours.begin() + best_chain_start_index + best_chain_length, contours.end());
         contours.erase(contours.begin(), contours.begin() + best_chain_start_index);
+    }
+
+    /**
+     * Takes a vector of contours and removes any contours that aren't (approximatally)
+     * a rectangle
+     *
+     * @param contours A vector of contours
+     */
+    void filter_contours_not_rectangles(std::vector<std::vector<cv::Point>> &contours) {
+        contours.erase(
+                std::remove_if(contours.begin(), contours.end(),
+                               [](std::vector<cv::Point> &c) {
+                                   // We don't want to change the contour for this image, it
+                                   // could make bounding rectangles harder to use
+                                   std::vector<cv::Point> poly_result;
+                                   double peri = arcLength(c, true);
+                                   approxPolyDP(c, poly_result, 0.04 * peri, true);
+                                   unsigned long num_vertices = poly_result.size();
+                                   return num_vertices != 4;
+                               }),
+                contours.end()
+        );
     }
 }
 
@@ -145,10 +168,11 @@ void PossibleCards::findPossibleCards(int low_threshold, int min_area) {
     Canny(processed_image, canny_lines_img, low_threshold, low_threshold * 3);
     findContours(canny_lines_img, possible_cards, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-    // Do some filtering based on the area of the cards, to attempt to pre-emptively
-    // filter out any contour that isn't a good canidate for a card
+    // Do some filtering based on the area of the cards, to attempt to preemptively
+    // filter out any contour that isn't a good candidate for a card
     filter_contours_min_area(possible_cards, min_area);
     filter_contours_similiar_area(possible_cards, similar_area_tolerance);
+    filter_contours_not_rectangles(possible_cards);
 }
 
 void PossibleCards::displayOriginalImage(void) {
