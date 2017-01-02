@@ -11,7 +11,7 @@ public:
     PossibleCards(std::string filename);
     void displayOriginalImage(void);
     void displayProcessedImage(void);
-    void findPossibleCards(int = 100, int = 900);
+    void displayPossibleCards(void);
 
 private:
     // Original color image (resized down)
@@ -23,6 +23,7 @@ private:
     // Contours that might make up a set card
     std::vector<std::vector<cv::Point>> possible_cards;
 
+    void findPossibleCards(int = 100, int = 1000);
 };
 
 

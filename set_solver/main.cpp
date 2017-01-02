@@ -21,20 +21,19 @@
  *   - Can check for attributes of card
  */
 
-using namespace std;
-
 int main(int argc, char** argv ) {
     if ( argc != 2 ) {
-        cout  << "usage: ./SetSolver <Image_Path>\n";
+        std::cout  << "usage: ./SetSolver <Image_Path>\n";
         return -1;
     }
 
     try {
         PossibleCards cards(argv[1]);
-        //cards.displayOriginalImage();
-        //cards.displayProcessedImage();
+        cards.displayOriginalImage();
+        cards.displayProcessedImage();
+        cards.displayPossibleCards();
     } catch (std::runtime_error &e) {
-        cout << e.what() << "\n";
+        std::cout << e.what() << "\n";
         return -1;
     }
 
