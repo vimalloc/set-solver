@@ -15,10 +15,11 @@ int main(int argc, char** argv ) {
         //possible_cards.displayProcessedImage();
         possible_cards.displayContours();
         std::vector<Card> cards = possible_cards.getCards();
+        std::cout << cards.size() << "\n";
         for (auto const &card : cards) {
             //card.displayOriginalImage();
             //card.displayProcessedImage();
-            card.displayContours();
+            //card.displayContours();
         }
     } catch (std::runtime_error &e) {
         std::cout << e.what() << "\n";

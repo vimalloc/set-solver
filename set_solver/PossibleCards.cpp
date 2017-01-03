@@ -1,5 +1,8 @@
 #include "PossibleCards.hpp"
 
+// TODO the card hierarchys are going to get super fucked up. This isn't good
+//      design at all. Fix it.
+
 
 // Free (non-member) helper functions use by this class. Wrap them in a namespace
 // here so they don't pollute any other namespaces
@@ -28,12 +31,33 @@ namespace {
 
     void filter_contours_without_children(std::vector<std::vector<cv::Point>> &contours,
                                           std::vector<cv::Vec4i> &hierarchy) {
-        // TODO instead of looping backwords here, I should just update the
-        //      hierarchy and the contours at the same time
-        for (long i=hierarchy.size()-1; i>=0; i--) {
-            if (hierarchy[i][2] == -1) {
-                contours.erase(contours.begin() + i);
+        // Get all the indexes we need to remove (From both contours and hierarchy)
+        std::vector<int> to_remove;
+        for (int i=0; i<hierarchy.size(); i++) {
+            // If this has no children, that means we didn't detect any images
+            // inside the possible card, so it can therefor not be a possible card
+            int child_index = hierarchy[i][2];
+            if (child_index == -1) {
+                to_remove.push_back(i);
+                continue;
             }
+
+            // If this contour has a parent, and the parent has a similar
+            // area to this contour, remove this contour. This indicates
+            // detecting the outside and inside contours for a possible card.
+            double this_area = cv::contourArea(contours[i]);
+            double child_area = cv::contourArea(contours[child_index]);
+            double child_parent_area_ratio = child_area / this_area;
+
+            if (child_parent_area_ratio >= 0.85) {
+                to_remove.push_back(i);
+            }
+        }
+
+        // Actually remove the items from contours and hierarchy
+        std::sort(to_remove.begin(), to_remove.end());
+        for(long i = to_remove.size() - 1; i >= 0; i--) {
+            contours.erase(contours.begin() + to_remove[i]);
         }
     }
 }
@@ -41,6 +65,7 @@ namespace {
 // Consts to avoid magic numbers in this code
 const int resized_width = 1000;
 const int min_contour_area = 1000;
+const int canny_threshold = 75;
 const double similar_area_tolerance = 1.4;
 
 PossibleCards::PossibleCards(std::string filename) {
@@ -60,33 +85,11 @@ PossibleCards::PossibleCards(std::string filename) {
     cv::resize(original_image, original_image, cv::Size(new_width, new_height));
 
     processImage();
-    findContours();
+    findContours(canny_threshold);
     filterPossibleContours();
 }
 
 void PossibleCards::filterPossibleContours() {
-    // TODO If there are a lot of triangles in the cards, this will cause the
-    //      triangles to be detected instead of the cards.
-    //
-    // Solution 1:
-    //   - Look at image hierarchy. Only accept possible cards if the card has
-    //     children contours. I think this would work well, but would complicate
-    //     the code for removing elements from the contour list
-    //
-    // Solution 2:
-    //   - Get rid of the 'similar area' requirement and just attempt to make
-    //     all cards possible cards. The card would have to be smart enough to
-    //     realize this wasn't a card, but it needs to be able to do that anyways.
-    //     The hardest thing I think would be in the user interface, where when
-    //     eventually we get this to android, we want to highlight the possible
-    //     cards in real time, and highlighting the triangles would not look
-    //     very good.
-    //
-    // Solution 3:
-    //   - Color analysis. Make sure all the detected cards are similar in color.
-    //     I can think of a million ways this could backfire (shadows, spilt stuff
-    //     on cards, etc).
-
     // Do some filtering based on the area of the cards, to attempt to preemptively
     // filter out any contour that isn't a good candidate for a card.
     filter_contours_without_children(contours, hierarchy);
