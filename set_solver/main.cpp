@@ -11,12 +11,12 @@ int main(int argc, char** argv ) {
 
     try {
         PossibleCards possible_cards(argv[1]);
-        possible_cards.displayOriginalImage();
+        //possible_cards.displayOriginalImage();
         //possible_cards.displayProcessedImage();
         possible_cards.displayContours();
         std::vector<Card> cards = possible_cards.getCards();
         for (auto const &card : cards) {
-            card.displayOriginalImage();
+            //card.displayOriginalImage();
             //card.displayProcessedImage();
             card.displayContours();
         }

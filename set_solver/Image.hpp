@@ -37,6 +37,7 @@ protected:
 
     // Original image with a blur and grayscale applied
     cv::Mat processed_image;
+    std::vector<cv::Vec4i> hierarchy;
 
     // Contours that might make up a set card
     std::vector<std::vector<cv::Point>> contours;

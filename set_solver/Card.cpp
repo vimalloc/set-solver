@@ -5,7 +5,6 @@
 namespace {
 }
 
-
 Card::Card(const cv::Mat &img, const std::vector<cv::Point> &contour) {
     // We need a vector of contour vectors for drawContours to work.
     std::vector<std::vector<cv::Point>> contours = std::vector<std::vector<cv::Point>>(1, contour);

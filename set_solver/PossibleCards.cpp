@@ -18,7 +18,7 @@ namespace {
                                    // could make bounding rectangles harder to use
                                    std::vector<cv::Point> poly_result;
                                    auto peri = arcLength(c, true);
-                                   approxPolyDP(c, poly_result, 0.04 * peri, true);
+                                   approxPolyDP(c, poly_result, 0.01 * peri, true);
                                    auto num_vertices = poly_result.size();
                                    return num_vertices != 4;
                                }),
@@ -54,11 +54,33 @@ PossibleCards::PossibleCards(std::string filename) {
 }
 
 void PossibleCards::filterPossibleContours() {
+    // TODO If there are a lot of triangles in the cards, this will cause the
+    //      triangles to be detected instead of the cards.
+    //
+    // Solution 1:
+    //   - Look at image hierarchy. Only accept possible cards if the card has
+    //     children contours. I think this would work well, but would complicate
+    //     the code for removing elements from the contour list
+    //
+    // Solution 2:
+    //   - Get rid of the 'similar area' requirement and just attempt to make
+    //     all cards possible cards. The card would have to be smart enough to
+    //     realize this wasn't a card, but it needs to be able to do that anyways.
+    //     The hardest thing I think would be in the user interface, where when
+    //     eventually we get this to android, we want to highlight the possible
+    //     cards in real time, and highlighting the triangles would not look
+    //     very good.
+    //
+    // Solution 3:
+    //   - Color analysis. Make sure all the detected cards are similar in color.
+    //     I can think of a million ways this could backfire (shadows, spilt stuff
+    //     on cards, etc).
+
     // Do some filtering based on the area of the cards, to attempt to preemptively
     // filter out any contour that isn't a good candidate for a card
     filter_contours_min_area(min_contour_area);
-    filter_contours_similar_area(similar_area_tolerance);
     filter_contours_not_rectangles(contours);
+    filter_contours_similar_area(similar_area_tolerance);
 }
 
 std::vector<Card> PossibleCards::getCards(void) const {

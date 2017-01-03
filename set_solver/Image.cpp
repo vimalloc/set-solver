@@ -34,7 +34,7 @@ void Image::findContours(int low_threshold) {
     // thresholding
     cv::Mat canny_lines_img;
     cv::Canny(processed_image, canny_lines_img, low_threshold, low_threshold * 3);
-    cv::findContours(canny_lines_img, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(canny_lines_img, contours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 }
 
 void Image::filter_contours_min_area(int min_area) {
