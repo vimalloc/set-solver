@@ -18,12 +18,23 @@ namespace {
                                    // could make bounding rectangles harder to use
                                    std::vector<cv::Point> poly_result;
                                    auto peri = arcLength(c, true);
-                                   approxPolyDP(c, poly_result, 0.01 * peri, true);
+                                   approxPolyDP(c, poly_result, 0.013 * peri, true);
                                    auto num_vertices = poly_result.size();
                                    return num_vertices != 4;
                                }),
                 contours.end()
         );
+    }
+
+    void filter_contours_without_children(std::vector<std::vector<cv::Point>> &contours,
+                                          std::vector<cv::Vec4i> &hierarchy) {
+        // TODO instead of looping backwords here, I should just update the
+        //      hierarchy and the contours at the same time
+        for (long i=hierarchy.size()-1; i>=0; i--) {
+            if (hierarchy[i][2] == -1) {
+                contours.erase(contours.begin() + i);
+            }
+        }
     }
 }
 
@@ -77,7 +88,8 @@ void PossibleCards::filterPossibleContours() {
     //     on cards, etc).
 
     // Do some filtering based on the area of the cards, to attempt to preemptively
-    // filter out any contour that isn't a good candidate for a card
+    // filter out any contour that isn't a good candidate for a card.
+    filter_contours_without_children(contours, hierarchy);
     filter_contours_min_area(min_contour_area);
     filter_contours_not_rectangles(contours);
     filter_contours_similar_area(similar_area_tolerance);
