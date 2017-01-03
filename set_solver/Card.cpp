@@ -1,17 +1,8 @@
-/*
- * Way to debug stuff by printing out images
- *
- * Card class
- *   - Takes an image of a card (basically bounding rect)
- *   - Does all the pre-processing which needs to be done
- *   - Can check for attributes of card
- */
-
-
 #include "Card.hpp"
 
-Card::Card(cv::Mat img) {
-    original_image = img;
+// Free (non-member) helper functions use by this class. Wrap them in a namespace
+// here so they don't pollute any other namespaces
+namespace {
 }
 
 
@@ -29,10 +20,6 @@ Card::Card(const cv::Mat &img, const std::vector<cv::Point> &contour) {
     // of the contour is black
     cv::Rect roi = cv::boundingRect(contour);
     original_image = masked_image(roi);
-}
-
-void Card::displayCard(void) const {
-    cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Display", original_image);
-    cv::waitKey(0);
+    processImage();
+    findContours();
 }
