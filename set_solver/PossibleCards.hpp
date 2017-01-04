@@ -35,8 +35,10 @@ public:
     std::vector<Card> getCards(void) const;
 
 private:
-    // Helper method to find possible cards in this image
-    void filterPossibleContours();
+    std::vector<std::vector<cv::Point>> possible_cards;
+
+    // Helper method to find contours which are possibly a set cards in this image
+    void find_possible_cards();
 };
 
 

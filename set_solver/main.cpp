@@ -11,9 +11,9 @@ int main(int argc, char** argv ) {
 
     try {
         PossibleCards possible_cards(argv[1]);
-        //possible_cards.displayOriginalImage();
-        //possible_cards.displayProcessedImage();
+        possible_cards.displayOriginalImage();
         possible_cards.displayContours();
+        /*
         std::vector<Card> cards = possible_cards.getCards();
         std::cout << cards.size() << "\n";
         for (auto const &card : cards) {
@@ -21,6 +21,7 @@ int main(int argc, char** argv ) {
             //card.displayProcessedImage();
             //card.displayContours();
         }
+        */
     } catch (std::runtime_error &e) {
         std::cout << e.what() << "\n";
         return -1;
