@@ -49,13 +49,22 @@ std::vector<int> Contours::sort_indexes_by_area() {
     return idx;
 }
 
-void Contours::filter_min_area(int min_area) {
+void Contours::filter_min_area(double min_area) {
     for(auto i=0; i<contours.size(); i++) {
         if(areas[i] < min_area) {
             filtered[i] = true;
         }
     }
 }
+
+void Contours::filter_max_area(double max_area) {
+    for(auto i=0; i<contours.size(); i++) {
+        if(areas[i] > max_area) {
+            filtered[i] = true;
+        }
+    }
+}
+
 
 void Contours::filter_without_children() {
     for (int i = 0; i < hierarchy.size(); i++) {
@@ -175,5 +184,45 @@ std::vector<std::vector<cv::Point>> Contours::get_filtered_contours() const {
         }
     }
     return filtered_contours;
+}
+
+// TODO I should just save edge thresholds instead of passing them into
+//      this function
+void Contours::filter_contours_edges(cv::Mat img, int distance_threshold) {
+    int top_edge_threshold = distance_threshold;
+    int bottom_edge_threshold = img.rows + distance_threshold;
+    int left_edge_threshold = distance_threshold;
+    int right_edge_threshold = img.cols + distance_threshold;
+
+    for (auto i = 0; i < contours.size(); i++) {
+        // Ignore anything that is already filtered
+        if (filtered[i] == true) {
+            continue;
+        }
+
+        // Loop over every point in this contour, and see if any of the points
+        // lines up near any of the edges in the image
+        for (auto const &point : contours[i]) {
+            if (point.y < top_edge_threshold ||
+                    point.y > bottom_edge_threshold ||
+                    point.x < left_edge_threshold ||
+                    point.x > right_edge_threshold) {
+
+                // Debugging
+                cv::Mat image_with_contours_outlined;
+                img.copyTo(image_with_contours_outlined);
+                cv::Scalar color(255, 0, 255);
+                auto border_size = 2;
+                cv::drawContours(image_with_contours_outlined, contours, i,
+                                 color, border_size);
+                cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
+                cv::imshow("Display", image_with_contours_outlined);
+                cv::waitKey(0);
+
+                filtered[i] = true;
+                break;
+            }
+        }
+    }
 }
 

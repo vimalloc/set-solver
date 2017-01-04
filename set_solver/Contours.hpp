@@ -27,7 +27,14 @@ public:
      *
      * @param min_area minimum area to not mark an image as filtered
      */
-    void filter_min_area(int min_area);
+    void filter_min_area(double min_area);
+
+    /**
+     * Filter out any contours that have more area then max_area
+     *
+     * @param min_area minimum area to not mark an image as filtered
+     */
+    void filter_max_area(double max_area);
 
     /**
      * Filters any contours that do not have children
@@ -47,6 +54,8 @@ public:
      * Filters any contours that are not (aproximatally) a rectangle
      */
     void filter_not_rectangles();
+
+     void filter_contours_edges(cv::Mat img, int distance_threshold);
 
     /**
      * Filter the contours down to the largest number of contours that share a
