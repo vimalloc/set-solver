@@ -1,5 +1,9 @@
 #include "PossibleCards.hpp"
 
+// TODO can still have a situation where a bunch of inner triangles are grabbed
+//      instead of the real possible cards. Hasn't come up in any images I've
+//      taken yet though... Think on it
+
 // Consts to avoid magic numbers in this code
 const int resized_width = 1000;
 const int min_contour_area = 1000;

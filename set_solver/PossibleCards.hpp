@@ -1,11 +1,13 @@
-//
-// Created by Landon Gilbert-Bland on 1/1/17.
-//
 #ifndef SET_POSSIBLECARDS_HPP
 #define SET_POSSIBLECARDS_HPP
 #include <opencv2/opencv.hpp>
 #include "Card.hpp"
 #include "Image.hpp"
+
+// TODO need to test this against a white background, but if we don't detect any (or many)
+//      possible cards with the default low_threshold (possibly due to white cards on a
+//      white background) we could try cutting the threshold in half and seeing if it
+//      yields better results
 
 class PossibleCards : public Image {
 

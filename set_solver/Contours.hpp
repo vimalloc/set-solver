@@ -1,7 +1,3 @@
-//
-// Created by lgbland on 1/3/17.
-//
-
 #ifndef SETSOLVER_CONTOURHIERARCHYHELPER_HPP
 #define SETSOLVER_CONTOURHIERARCHYHELPER_HPP
 #include <opencv2/opencv.hpp>

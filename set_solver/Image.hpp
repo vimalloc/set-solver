@@ -1,14 +1,8 @@
 #ifndef SETSOLVER_IMAGE_HPP
 #define SETSOLVER_IMAGE_HPP
 #include <opencv2/opencv.hpp>
-#include <set>
 #include "Contours.hpp"
 
-
-// TODO need to test this against a white background, but if we don't detect any (or many)
-//      possible cards with the default low_threshold (possibly due to white cards on a
-//      white background) we could try cutting the threshold in half and seeing if it
-//      yields better results
 
 class Image {
 
@@ -19,8 +13,7 @@ public:
     void displayOriginalImage(void) const;
 
     /**
-     * Display the *possible* cards in this image. Cards highlighed
-     * by this method may or may not be valid set cards
+     * Display the filtered contours found in this image
      */
     void displayContours(void) const;
 
