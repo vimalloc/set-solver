@@ -14,6 +14,11 @@ public:
      * @param contours Contour which decribes a card in the image
      */
     Card(const cv::Mat &img, const std::vector<cv::Point> &contour);
+
+    long get_number_of_shapes(void) const;
+
+private:
+    std::vector<std::vector<cv::Point>> shapes;
 };
 
 

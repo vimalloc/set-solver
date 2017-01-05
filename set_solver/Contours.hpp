@@ -26,13 +26,6 @@ public:
     void filter_min_area(double min_area);
 
     /**
-     * Filter out any contours that have more area then max_area
-     *
-     * @param min_area minimum area to not mark an image as filtered
-     */
-    void filter_max_area(double max_area);
-
-    /**
      * Filters any contours that do not have children
      */
     void filter_without_children();
@@ -51,7 +44,13 @@ public:
      */
     void filter_not_rectangles();
 
-     void filter_contours_edges(cv::Mat img, int distance_threshold);
+    /**
+     * Removes any contours where any point on the contour is within
+     * distance_threshold pixels of any of the images edges
+     *
+     * @param distance_threshold
+     */
+    void filter_contours_near_edges(int distance_threshold);
 
     /**
      * Filter the contours down to the largest number of contours that share a
@@ -61,6 +60,12 @@ public:
      *                       This should be between 0 and 1.
      */
     void filter_most_common_area(double area_tolerance);
+
+    /**
+     * Removes all children from any contours that have not already been
+     * filtered
+     */
+    void filter_children();
 
     /**
      * Get a new vector of contours which contain only the contours that have
@@ -88,6 +93,9 @@ private:
     // The indexes into this vector correspond with the indexes into the contours vector.
     // Ex: If filtered[1] = true, contours[1] is considered to be filtered
     std::vector<bool> filtered;
+
+    // Dimensions of this image
+    int rows, cols;
 
     // Find the areas for each contour and stores them in the areas vector
     void find_contour_areas(void);
