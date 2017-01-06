@@ -17,8 +17,8 @@ int main(int argc, char** argv ) {
         for (auto const &card : cards) {
             card.displayOriginalImage();
             card.displayContours();
-            std::cout << card.get_number_of_shapes() << "\n";
-
+            std::cout << card.get_number_of_shapes() << " " <<
+                         card.get_color() << "\n";
         }
     } catch (std::runtime_error &e) {
         std::cout << e.what() << "\n";

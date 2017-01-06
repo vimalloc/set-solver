@@ -17,6 +17,8 @@ public:
 
     long get_number_of_shapes(void) const;
 
+    std::string get_color(void) const;
+
 private:
     std::vector<std::vector<cv::Point>> shapes;
 };
